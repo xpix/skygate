@@ -1,4 +1,4 @@
-from skygate.misc import *
+from misc import *
 
 class LoRaScreen(object):
 	

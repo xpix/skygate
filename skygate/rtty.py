@@ -1,4 +1,4 @@
-from skygate.radio import *
+from radio import *
 import threading
 import socket
 import time

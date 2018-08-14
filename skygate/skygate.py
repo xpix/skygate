@@ -4,13 +4,13 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, GObject, Pango, Gdk, GLib, GdkPixbuf
 from pkg_resources import resource_filename
-import skygate.misc
-from skygate.gateway import *
-from skygate.habscreen import *
-from skygate.lorascreen import *
-from skygate.rttyscreen import *
-from skygate.gpsscreen import *
-from skygate.ssdvscreen import *
+import misc
+from gateway import *
+from habscreen import *
+from lorascreen import *
+from rttyscreen import *
+from gpsscreen import *
+from ssdvscreen import *
 import configparser
 import datetime
 import string
@@ -103,7 +103,7 @@ class SkyGate:
 		# Gateway
 		self.gateway = gateway(CarID=self.ChaseCarID, CarPeriod=30, CarEnabled=self.ChaseCarEnabled,
 								RadioCallsign=self.ReceiverCallsign,
-								LoRaChannel=1, LoRaFrequency=self.LoRaFrequency, LoRaMode=self.LoRaMode, EnableLoRaUpload=self.EnableLoRaUpload,
+								LoRaChannel=0, LoRaFrequency=self.LoRaFrequency, LoRaMode=self.LoRaMode, EnableLoRaUpload=self.EnableLoRaUpload,
 								RTTYFrequency=self.RTTYFrequency,
 								OnNewGPSPosition=self._NewGPSPosition,
 								OnNewRTTYData=self._NewRTTYData, OnNewRTTYSentence=self._NewRTTYSentence,

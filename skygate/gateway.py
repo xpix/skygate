@@ -1,8 +1,8 @@
-from skygate.gps import *
-from skygate.lora import *
-from skygate.rtty import *
-from skygate.habitat import *
-from skygate.ssdv import *
+from gps import *
+from lora import *
+from rtty import *
+from habitat import *
+from ssdv import *
 from time import sleep
 
 class gateway(object):
@@ -14,7 +14,7 @@ class gateway(object):
 	def __init__(self,
 					CarID='Python', CarPeriod=30, CarEnabled=True,
 					RadioCallsign='python',
-					LoRaChannel=1, LoRaFrequency=434.450, LoRaMode=1, EnableLoRaUpload=True, StoreSSDVLocally=True,
+					LoRaChannel=0, LoRaFrequency=434.450, LoRaMode=1, EnableLoRaUpload=True, StoreSSDVLocally=True,
 					RTTYFrequency=434.250,
 					OnNewGPSPosition=None,
 					OnNewRTTYData=None, OnNewRTTYSentence=None,
@@ -45,6 +45,7 @@ class gateway(object):
 		self.habitat = habitat(ChaseCarID=CarID, ChaseCarPeriod=CarPeriod, ChaseCarEnabled=CarEnabled)
 		self.habitat.open()
 		
+		print("LORA: Ch: %d Freq: %s Mode: %d" % (LoRaChannel, LoRaFrequency, LoRaMode))
 		self.lora = LoRa(LoRaChannel, LoRaFrequency, LoRaMode)
 		self.lora.listen_for_packets(self.__lora_packet)
 	
@@ -58,18 +59,19 @@ class gateway(object):
 			
 	def __lora_packet(self, result):
 		packet = result['packet']
+		print(packet)
 		if packet == None:
 			print("Failed packet")
 		else:
 			self.LoRaFrequencyError = result['freq_error']
-			if self.habitat.IsSentence(packet[0]):
+			if packet and self.habitat.IsSentence(packet[0]):
 				self.LatestLoRaSentence = ''.join(map(chr,bytes(packet).split(b'\x00')[0]))
 				print("LoRa Sentence: " + self.LatestLoRaSentence, end='')
 				if self.EnableLoRaUpload:
 					self.habitat.UploadTelemetry(self.RadioCallsign, self.LatestLoRaSentence)
 				if self.OnNewLoRaSentence:
 					self.OnNewLoRaSentence(self.LatestLoRaSentence)
-			elif self.habitat.IsSSDV(packet[0]):
+			elif packet and self.habitat.IsSSDV(packet[0]):
 				packet = bytearray([0x55] + packet)
 				header = self.ssdv.extract_header(packet)
 				print("LoRa SSDV Hdr:", header)
@@ -81,7 +83,7 @@ class gateway(object):
 				if self.OnNewLoRaSSDV:
 					self.OnNewLoRaSSDV(header)
 			else:
-				print("Unknown packet ", packet[0])
+				print("Unknown packet ", packet)
 				
 			if self.OnLoRaFrequencyError:
 				self.OnLoRaFrequencyError(self.LoRaFrequencyError)

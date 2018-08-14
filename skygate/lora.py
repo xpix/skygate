@@ -1,6 +1,6 @@
 from gpiozero import InputDevice
 import threading
-from skygate.radio import *
+from radio import *
 import spidev
 import time
 
