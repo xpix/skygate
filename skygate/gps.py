@@ -100,7 +100,7 @@ class GPS(object):
 	"""
 	PortOpen = False
 	
-	def __init__(self, Device='/dev/ttyAMA0'):
+	def __init__(self, Device='/dev/ttyS0'):
 		self._WhenLockGained = None
 		self._WhenLockLost = None
 		self._WhenNewPosition = None
@@ -135,14 +135,15 @@ class GPS(object):
 						time.sleep(0.1)
 			else:
 				time.sleep(1)
-
+				
 	def open(self):
 		# Open connection to GPS
 		try:
 			self.ser.open()
 			self.IsOpen = True
-		except:
+		except Exception as e:
 			self.IsOpen = False
+			print("error open serial port: " + str(e))
 	
 	def Position(self):
 		return GPSPosition

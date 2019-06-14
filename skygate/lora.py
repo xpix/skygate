@@ -100,7 +100,10 @@ class LoRa(Radio):
 			if Channel == 1:
 				DIO0 = 16
 			else:
-				DIO0 = 25
+				# MyLora Device
+				# DIO0 = 25
+            # Dragon GPS Hat
+				DIO0 = 4
 
 		if DIO5 == 0:
 			if Channel == 1:

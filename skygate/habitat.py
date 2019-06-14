@@ -90,7 +90,6 @@ class habitat(object):
 		req.add_header('Content-Type', 'application/json')
 		try:
 			response = urllib.request.urlopen(req, data.encode())
-			print("OK")
 		except Exception as e:
-			print("Failed")
+			print("Failed send image to ssdv.habhub.org")
 			pass

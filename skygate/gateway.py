@@ -49,8 +49,8 @@ class gateway(object):
 		self.lora = LoRa(LoRaChannel, LoRaFrequency, LoRaMode)
 		self.lora.listen_for_packets(self.__lora_packet)
 	
-		self.rtty = RTTY(Frequency=RTTYFrequency)
-		self.rtty.listen_for_sentences(self.__rtty_sentence, self.__rtty_partial_sentence)
+		# self.rtty = RTTY(Frequency=RTTYFrequency)
+		# self.rtty.listen_for_sentences(self.__rtty_sentence, self.__rtty_partial_sentence)
 	
 	def __OnNewGPSPosition(self, Position):
 		self.habitat.CarPosition = Position
@@ -59,14 +59,13 @@ class gateway(object):
 			
 	def __lora_packet(self, result):
 		packet = result['packet']
-		print(packet)
-		if packet == None:
+		if not packet:
 			print("Failed packet")
 		else:
 			self.LoRaFrequencyError = result['freq_error']
 			if packet and self.habitat.IsSentence(packet[0]):
 				self.LatestLoRaSentence = ''.join(map(chr,bytes(packet).split(b'\x00')[0]))
-				print("LoRa Sentence: " + self.LatestLoRaSentence, end='')
+				print("LoRa Sentence: " + self.LatestLoRaSentence + ' RSSI: ' + str(self.lora.CurrentRSSI()))
 				if self.EnableLoRaUpload:
 					self.habitat.UploadTelemetry(self.RadioCallsign, self.LatestLoRaSentence)
 				if self.OnNewLoRaSentence:
@@ -74,7 +73,7 @@ class gateway(object):
 			elif packet and self.habitat.IsSSDV(packet[0]):
 				packet = bytearray([0x55] + packet)
 				header = self.ssdv.extract_header(packet)
-				print("LoRa SSDV Hdr:", header)
+				print("LoRa SSDV Hdr:", header, "\n RSSI: " + str(self.lora.CurrentRSSI()))
 				if self.EnableLoRaUpload:
 					self.habitat.UploadSSDV(self.RadioCallsign, packet)
 				if self.StoreSSDVLocally:
@@ -82,8 +81,8 @@ class gateway(object):
 				self.LatestLoRaPacketHeader = header
 				if self.OnNewLoRaSSDV:
 					self.OnNewLoRaSSDV(header)
-			else:
-				print("Unknown packet ", packet)
+#			else:
+#				print("Unknown packet!")
 				
 			if self.OnLoRaFrequencyError:
 				self.OnLoRaFrequencyError(self.LoRaFrequencyError)

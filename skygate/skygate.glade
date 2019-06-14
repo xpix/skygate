@@ -655,7 +655,7 @@ items such as your callsign for the live map</property>
                 <property name="can_focus">False</property>
                 <property name="halign">center</property>
                 <property name="valign">end</property>
-                <property name="label" translatable="yes">Maximum Altitude:</property>
+                <property name="label" translatable="yes">Maximum Altitude</property>
                 <property name="single_line_mode">True</property>
               </object>
               <packing>

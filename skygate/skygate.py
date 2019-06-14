@@ -364,8 +364,8 @@ class SkyGate:
 		self.gateway.EnableLoRaUpload = self.EnableLoRaUpload
 		
 		# RTTY
-		self.gateway.rtty.SetFrequency(self.RTTYFrequency)
-		self.RTTYScreen.ShowRTTYFrequency(self.RTTYFrequency)
+		# self.gateway.rtty.SetFrequency(self.RTTYFrequency)
+		# self.RTTYScreen.ShowRTTYFrequency(self.RTTYFrequency)
 		
 		# Car
 		self.gateway.habitat.ChaseCarEnabled = self.ChaseCarEnabled
@@ -454,7 +454,7 @@ class SkyGate:
 			
 			TimeStamp = datetime.datetime.strptime(list[2], '%H:%M:%S')
 
-			return {'payload': payload, 'time': TimeStamp, 'lat': float(list[3]), 'lon': float(list[4]), 'alt': float(list[5])}
+			return {'payload': payload, 'time': TimeStamp, 'lat': float(list[3]), 'lon': float(list[4]), 'alt': float(list[5]), 'rssi': self.gateway.lora.CurrentRSSI()}
 		except:
 			return None
 		
